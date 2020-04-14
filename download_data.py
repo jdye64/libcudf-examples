@@ -8,7 +8,7 @@ if not os.path.exists(data_dir):
 
 # download weather observations
 base_url = 'ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/by_year/'
-years = list(range(2000, 2020))
+years = list(range(2010, 2020))
 for year in years:
     fn = str(year) + '.csv.gz'
     if not os.path.isfile(data_dir+fn):
