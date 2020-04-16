@@ -5,6 +5,7 @@ project(cudf-examples VERSION 0.1.0 LANGUAGES C CXX CUDA)
 # We are telling CMake where to locate the "FindCudf.cmake" module location file here since it is not shipped natively with cmake currently.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+# The CUDA compiler must be present on the system
 if(NOT CMAKE_CUDA_COMPILER)
   message(SEND_ERROR "CMake cannot locate a CUDA compiler")
 endif(NOT CMAKE_CUDA_COMPILER)
@@ -99,7 +100,7 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --expt-extended-lambda --expt-relaxed-
 # TODO: remove `no-maybe-unitialized` used to suppress warnings in rmm::exec_policy
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Werror=cross-execution-space-call -Xcompiler -Wall,-Werror,-Wno-error=deprecated-declarations")
 
-option(DISABLE_DEPRECATION_WARNING "Disable warnings generated from deprecated declarations." OFF)
+option(DISABLE_DEPRECATION_WARNING "Disable warnings generated from deprecated declarations." ON)
 if(DISABLE_DEPRECATION_WARNING)
     set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -Xcompiler -Wno-deprecated-declarations")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
@@ -111,24 +112,16 @@ if(CMAKE_CUDA_LINEINFO)
     set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo")
 endif(CMAKE_CUDA_LINEINFO)
 
-# Debug options
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-    message(STATUS "Building with debugging flags")
-    set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -G -Xcompiler -rdynamic")
-endif(CMAKE_BUILD_TYPE MATCHES Debug)
-
 # To apply RUNPATH to transitive dependencies (this is a temporary solution)
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--disable-new-dtags")
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,--disable-new-dtags")
 
 # Build options
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-option(BUILD_TESTS "Configure CMake to build tests" ON)
-option(BUILD_BENCHMARKS "Configure CMake to build (google) benchmarks" OFF)
 
 ###################################################################################################
 # - cudart options --------------------------------------------------------------------------------
-# cudart can be statically linked or dynamically linked. The python ecosystem wants dynamic linking
+# cudart can be statically linked or dynamically linked.
 
 option(CUDA_STATIC_RUNTIME "Statically link the CUDA runtime" OFF)
 
@@ -166,17 +159,23 @@ else()
     message(FATAL_ERROR "CUDF not found, please check your settings.")
 endif(CUDF_FOUND)
 
+
 ###################################################################################################
 # - include paths ---------------------------------------------------------------------------------
 
-if(CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES)
-	include_directories("${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
-endif(CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES)
-
-include_directories("${CUDF_INCLUDE_DIRS}")
+include_directories("${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}"
+                    "${CUDF_INCLUDE_DIRS}"
+                    "${CMAKE_BINARY_DIR}/include"
+                    "${CMAKE_BINARY_DIR}/include/jit"
+                    "${CMAKE_SOURCE_DIR}/include"
+                    "${CMAKE_SOURCE_DIR}/src"
+                    "${CMAKE_SOURCE_DIR}/thirdparty/cub"
+                    "${CMAKE_SOURCE_DIR}/thirdparty/jitify"
+                    "${CMAKE_SOURCE_DIR}/thirdparty/libcudacxx/include"
+                    "${CUDF_INCLUDE_DIRS}")
 
 if(CONDA_INCLUDE_DIRS)
-    include_directories("${CONDA_INCLUDE_DIRS}")
+  include_directories("${CONDA_INCLUDE_DIRS}")
 endif(CONDA_INCLUDE_DIRS)
 
 ###################################################################################################
@@ -184,15 +183,14 @@ endif(CONDA_INCLUDE_DIRS)
 
 link_directories("${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}"
                  "${CMAKE_BINARY_DIR}/lib"
-                 "${CMAKE_BINARY_DIR}"
-                 "${CONDA_PREFIX}/lib")
+                 "${CMAKE_BINARY_DIR}")
 
 if(CONDA_LINK_DIRS)
-    link_directories("${CONDA_LINK_DIRS}")
+  link_directories("${CONDA_LINK_DIRS}")
 endif(CONDA_LINK_DIRS)
 
 ###################################################################################################
-# - library targets -------------------------------------------------------------------------------
+# - example executable ----------------------------------------------------------------------------
 
 add_executable(cudf-examples
             main.cpp
@@ -201,4 +199,6 @@ add_executable(cudf-examples
 ###################################################################################################
 # - link libraries --------------------------------------------------------------------------------
 
+message(STATUS "Linking CUDF_LIBRARIES: ${CUDF_LIBRARIES}")
 target_link_libraries(cudf-examples ${CUDF_LIBRARIES})
+

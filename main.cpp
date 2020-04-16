@@ -6,7 +6,11 @@
 #include <cudf/io/functions.hpp>
 
 #include <cudf/cudf.h>
-//#include <cudf/binaryop.hpp>
+#include <cudf/binaryop.hpp>
+
+#include <cudf/column/column.hpp>
+#include <cudf/scalar/scalar.hpp>
+
 
 int main() {
     printf("RapidsAI Simple libcudf Example\n");
@@ -33,18 +37,29 @@ int main() {
     // 1.3 Perform the actual read which create the cudf::table instance for you. Same thing as Python "DataFrame" instance
     io::table_with_metadata wdf = io::read_csv(in_args);
 
-    // 1.4 This is not required its simply here to illustrate how info about the resulting table instance can be obtained
-    setlocale(LC_NUMERIC, "");  // Simply for thousands separator
-    printf("Num Columns: %'d Number of Rows: %'d\n", wdf.tbl->num_columns(), wdf.tbl->num_rows());
+    // // 1.4 This is not required its simply here to illustrate how info about the resulting table instance can be obtained
+    // setlocale(LC_NUMERIC, "");  // Simply for thousands separator
+    // printf("Num Columns: %'d Number of Rows: %'d\n", wdf.tbl->num_columns(), wdf.tbl->num_rows());
     
-    // Just an example of how to retrieve the table column names
-    std::vector<std::string> column_names = wdf.metadata.column_names;
+    // // Just an example of how to retrieve the table column names
+    // std::vector<std::string> column_names = wdf.metadata.column_names;
 
-    // 2 - Perform filter and group by aggregation
+    // 2 - Weather data Logic section
     
     // 2.1 - Only keep 'PRCP' (Precipitation) events
-    //std::unique_ptr<column> result = cudf::experimental::binary_operation();
-    
+    using TypeOut = bool;
+    using TypeLhs = std::string;
+    using TypeRhs = std::string;
+
+    cudf::experimental::binary_operator eq_precip_binop = cudf::experimental::binary_operator::EQUAL;
+    cudf::string_scalar prcp_scalar("PRCP");
+
+    //using EQUAL = cudf::library::operation::Equal<TypeOut, TypeLhs, TypeRhs>;
+
+    auto result = cudf::experimental::binary_operation(prcp_scalar, 
+                                                       wdf.tbl->view().column(2), 
+                                                       cudf::experimental::binary_operator::EQUAL,
+                                                       cudf::data_type(cudf::experimental::type_to_id<TypeOut>()));
 
     // 3 - Write results back to parquet file
 
