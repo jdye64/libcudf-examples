@@ -6,3 +6,7 @@
 	path = thirdparty/jitify
 	url = https://github.com/rapidsai/jitify.git
 	branch = cudf
+[submodule "thirdparty/cub"]
+	path = thirdparty/cub
+	url = https://github.com/rapidsai/thirdparty-cub.git
+	branch = cudf-cub

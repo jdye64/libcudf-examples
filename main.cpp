@@ -10,6 +10,9 @@
 
 #include <cudf/column/column.hpp>
 #include <cudf/scalar/scalar.hpp>
+#include <cudf/copying.hpp>
+
+#include <cudf/detail/copy_if.cuh>
 
 
 int main() {
@@ -51,22 +54,32 @@ int main() {
     using TypeLhs = std::string;
     using TypeRhs = std::string;
 
-    cudf::experimental::binary_operator eq_precip_binop = cudf::experimental::binary_operator::EQUAL;
-    cudf::string_scalar prcp_scalar("PRCP");
+    // cudf::experimental::binary_operator eq_precip_binop = cudf::experimental::binary_operator::EQUAL;
+    //cudf::string_scalar prcp_scalar("PRCP");
+
+    // auto result = cudf::experimental::binary_operation(prcp_scalar, 
+    //                                                    wdf.tbl->view().column(2), // "observation_type" column
+    //                                                    cudf::experimental::binary_operator::EQUAL,
+    //                                                    cudf::data_type(cudf::experimental::type_to_id<TypeOut>()));
 
     //using EQUAL = cudf::library::operation::Equal<TypeOut, TypeLhs, TypeRhs>;
 
-    auto result = cudf::experimental::binary_operation(prcp_scalar, 
-                                                       wdf.tbl->view().column(2), 
-                                                       cudf::experimental::binary_operator::EQUAL,
-                                                       cudf::data_type(cudf::experimental::type_to_id<TypeOut>()));
+    // Create a Filter/Functor to filter only for the desired "PRCP" weather events. Ensure __device__ is present to run in CUDA!
+    struct prcp_evt_functor {
+        bool operator()(cudf::size_type i) const { return true; }
+    };
+
+
+    std::unique_ptr<cudf::experimental::table> prcp_tbl = cudf::experimental::detail::copy_if(wdf.tbl->view(), prcp_evt_functor);
 
     // 3 - Write results back to parquet file
 
     // 3.1 Similarly to reading arguments we also need to have "parquet_write_args"
     // Reference:
     std::string output_parquet = "/home/jdyer/Development/libcudf-examples/data/weather/results.parquet";
-    io::write_parquet_args out_args{io::sink_info{output_parquet}, wdf.tbl->view()};
+    //io::write_parquet_args out_args{io::sink_info{output_parquet}, wdf.tbl->view()};
+    //std::make_uni<cudf::experimental::table> out_table = 
+    io::write_parquet_args out_args{io::sink_info{output_parquet}, prcp_tbl->view()};
 
     // Actually write the parquet data to file
     io::write_parquet(out_args);
