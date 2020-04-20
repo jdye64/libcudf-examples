@@ -8,8 +8,9 @@ A couple of assumptions are made about the setup for building and running this e
 3. CUDA is installed. This version was tested with CUDA 10.2 but other versions should work.
 
 ### Steps
-1. We need to create a conda environment. ```conda env create -f ${EXAMPLE_HOME}/conda/cudf_dev_cuda10.2.yml```
-2. Create the cmake env. ```mkdir ${EXAMPLE_HOME}/build && cd ${EXAMPLE_HOME}/build && cmake ..```
-3. Perform the actual build. ```make -j```
-4. Download weather data. A convenience Python script has been provided here to make that easier for you. By default it will download years 2010-2020 weather data. That data is about 300MB per file so if you need to download less files you can change that in the script. The data will be downloaded to ${EXAMPLE_HOME}/data/weather. ```python ${EXAMPLE_HOME}/download_data.py```
-4. Run the executable. It expects an input of a single Weather year file and the output path for the resulting parquet file. EX: ```./cudf-examples /home/data/weather/2010.csv.gz /home/data/weather/results.parquet```
+1. lone the repo and submodules ```git clone https://github.com/jdye64/libcudf-examples.git && cd libcudf-examples && git submodule update --init --remote --recursive```
+2. We need to create a conda environment. ```conda env create -f ${EXAMPLE_HOME}/conda/cudf_dev_cuda10.2.yml```
+3. Create the cmake env. ```mkdir ${EXAMPLE_HOME}/build && cd ${EXAMPLE_HOME}/build && cmake ..```
+4. Perform the actual build. ```make -j```
+5. Download weather data. A convenience Python script has been provided here to make that easier for you. By default it will download years 2010-2020 weather data. That data is about 300MB per file so if you need to download less files you can change that in the script. The data will be downloaded to ${EXAMPLE_HOME}/data/weather. ```python ${EXAMPLE_HOME}/download_data.py```
+6. Run the executable. It expects an input of a single Weather year file and the output path for the resulting parquet file. EX: ```./cudf-examples /home/data/weather/2010.csv.gz /home/data/weather/results.parquet```
