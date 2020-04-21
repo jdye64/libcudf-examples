@@ -196,9 +196,14 @@ add_executable(cudf-examples
             main.cpp
 )
 
+add_executable(kernel-example
+            main.cu
+)
+
 ###################################################################################################
 # - link libraries --------------------------------------------------------------------------------
 
 message(STATUS "Linking CUDF_LIBRARIES: ${CUDF_LIBRARIES}")
 target_link_libraries(cudf-examples ${CUDF_LIBRARIES})
+target_link_libraries(kernel-example ${CUDF_LIBRARIES})
 
