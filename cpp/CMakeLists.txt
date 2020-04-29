@@ -193,11 +193,11 @@ endif(CONDA_LINK_DIRS)
 # - example executable ----------------------------------------------------------------------------
 
 add_executable(cudf-examples
-            main.cpp
+            src/main.cpp
 )
 
 add_executable(kernel-example
-            main.cu
+            src/main.cu
 )
 
 ###################################################################################################

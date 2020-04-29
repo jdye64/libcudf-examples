@@ -63,7 +63,6 @@ __global__ void cudfUDF(void *data, int *dev_size)
     cudaMemcpy(d_size, size, sizeof(int), cudaMemcpyHostToDevice);
 
     // Perform cudfUDF on weather data
-    // cudfUDF<<<1, 1>>>(std::move(wdf.tbl), d_size);
     std::unique_ptr<rmm::device_buffer> b = wdf.tbl->get_column(0).release().data;
     cudfUDF<<<1, 1>>>(b->data(), d_size);
 

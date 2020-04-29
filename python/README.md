@@ -1,0 +1,1 @@
+python setup.py build_ext --inplace --library-dir=${CUSTOMCUDA_BUILD_DIR}

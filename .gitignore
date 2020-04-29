@@ -1,3 +1,6 @@
 build
 .vscode
-data
+data/weather
+python/__pycache__
+python/build
+python/**/*.cpp
