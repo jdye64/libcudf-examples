@@ -131,7 +131,7 @@ ext = Extension('cudfkernel',
         extra_compile_args= {
             'gcc': [],
             'nvcc': [
-                '-arch=sm_30', '--ptxas-options=-v', '-c',
+                '--ptxas-options=-v', '-c',
                 '--compiler-options', "'-fPIC'"
                 ]
             },
@@ -139,7 +139,7 @@ ext = Extension('cudfkernel',
 
 setup(
     name='cudfkernel',
-    version='0.1',
+    version='0.2',
     description="cudfkernel - Use existing CUDA Kernels with RapidsAI cuDF DataFrames",
     url="https://github.com/jdye64/libcudf-examples",
     author="Jeremy Dyer",

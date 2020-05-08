@@ -16,7 +16,7 @@ cdef class CudfWrapper:
         self.gdf = new C_CudfWrapper(t.mutable_view())
 
     def tenth_mm_to_inches(self, col_index):
-        self.gdf.tenth_mm_to_inches(col_index)
+        self.gdf.tenth_mm_to_inches(col_index)  
 
     def mm_to_inches(self, col_index):
         self.gdf.mm_to_inches(col_index)

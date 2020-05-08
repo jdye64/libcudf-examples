@@ -27,12 +27,15 @@ CudfWrapper::CudfWrapper(cudf::mutable_table_view table_view) {
 
 void CudfWrapper::tenth_mm_to_inches(int column_index) {
 
-  printf("# of columns: %lu\n", mtv.num_columns());
-  printf("# of rows: %lu\n", mtv.num_rows());
+  printf("kernel_wrapper.cu # of columns: %lu\n", mtv.num_columns());
+  printf("kernel_wrapper.cu # of rows: %lu\n", mtv.num_rows());
 
   std::unique_ptr<cudf::mutable_column_device_view, std::function<void(cudf::mutable_column_device_view*)>> 
-    mutable_device_column = cudf::mutable_column_device_view::create(mtv.column(column_index));
+    mutable_device_column = cudf::mutable_column_device_view::create(mtv.column(1));
+
+  printf("kernel_wrapper.cu column.data<int64_t>(): %p\n", mutable_device_column->data<int64_t>());
   kernel_tenth_mm_to_inches<<<1, 1>>>(*mutable_device_column, mtv.num_rows());
+  cudaDeviceSynchronize();
 }
 
 void CudfWrapper::mm_to_inches(int column_index) {
