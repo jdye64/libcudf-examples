@@ -1,6 +1,9 @@
 build
 .vscode
 data/weather
-python/__pycache__
-python/build
-python/**/*.cpp
+cython/__pycache__
+cython/build
+cython/**/*.cpp
+cython/**/__pycache__
+cython/dist
+cython/*.egg-info

@@ -15,15 +15,10 @@
 #include <cudf/aggregation.hpp>
 
 #include <rmm/device_buffer.hpp>
+#include "MMToInchesKernel.cuh"
 
-__global__ void cudfUDF(void *data, int *dev_size)
-{
-  int i = blockIdx.x * blockDim.x + threadIdx.x;
-  //if (i < n) y[i] = a*x[i] + y[i];
-  *dev_size = sizeof(data);
-}
 
-  int main(int argc, char** argv) {
+int main(int argc, char** argv) {
     printf("RapidsAI Weather libcudf Example\n");
 
     if (argc != 3) {

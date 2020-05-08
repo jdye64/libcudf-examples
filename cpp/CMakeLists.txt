@@ -163,6 +163,9 @@ endif(CUDF_FOUND)
 ###################################################################################################
 # - include paths ---------------------------------------------------------------------------------
 
+message(STATUS "CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_SOURCE_DIR}")
+
 include_directories("${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}"
                     "${CUDF_INCLUDE_DIRS}"
                     "${CMAKE_BINARY_DIR}/include"
@@ -197,7 +200,7 @@ add_executable(cudf-examples
 )
 
 add_executable(kernel-example
-            src/main.cu
+            src/MMToInchesKernel.cu
 )
 
 ###################################################################################################
@@ -205,5 +208,4 @@ add_executable(kernel-example
 
 message(STATUS "Linking CUDF_LIBRARIES: ${CUDF_LIBRARIES}")
 target_link_libraries(cudf-examples ${CUDF_LIBRARIES})
-target_link_libraries(kernel-example ${CUDF_LIBRARIES})
-
+target_link_libraries(kernel-example ${CUDF_LIBRARIES} ${CUDART_LIBRARY})
