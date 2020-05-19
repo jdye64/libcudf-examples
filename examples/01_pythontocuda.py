@@ -33,4 +33,5 @@ tmin_df = weather_df['type'] == 'TMIN'
 # Run the custom Kernel on the specified Dataframe Columns
 rainfall_kernel = cudfkernel.CudfWrapper(weather_df)
 rainfall_kernel.tenth_mm_to_inches(3)
-print(weather_df.head())
+print("after this???")
+#print(weather_df.head())

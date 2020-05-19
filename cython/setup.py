@@ -139,7 +139,7 @@ ext = Extension('cudfkernel',
 
 setup(
     name='cudfkernel',
-    version='0.2',
+    version='0.1',
     description="cudfkernel - Use existing CUDA Kernels with RapidsAI cuDF DataFrames",
     url="https://github.com/jdye64/libcudf-examples",
     author="Jeremy Dyer",
